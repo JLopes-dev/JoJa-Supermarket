@@ -33,7 +33,7 @@ public class ProductController {
             ProductModel productSaved = productRepository.save(new ProductModel(dtoProduct));
             productSaved.setUser(user);
             URI uri = uriComponentsBuilder.path("/product/{id}").buildAndExpand(productSaved.getId()).toUri();
-            return ResponseEntity.created(uri).body(new DTOProduct(productSaved.getName(), productSaved.getPrice(), productSaved.getQuantity()));
+            return ResponseEntity.created(uri).body(new DTOProduct(productSaved.getId(), productSaved.getName(), productSaved.getPrice(), productSaved.getQuantity()));
         }
         return ResponseEntity.notFound().build();
     }
@@ -42,7 +42,7 @@ public class ProductController {
     public ResponseEntity<List<DTOProduct>> showAllProductsByUser(@PathVariable String username){
         UserModel user = (UserModel) userRepository.findByUsername(username);
         if (user != null){
-            List<DTOProduct> products = productRepository.findByUser(user).stream().map(value -> new DTOProduct(value.getName(), value.getPrice(), value.getQuantity())).toList();
+            List<DTOProduct> products = productRepository.findByUser(user).stream().map(value -> new DTOProduct(value.getId(), value.getName(), value.getPrice(), value.getQuantity())).toList();
             return ResponseEntity.ok(products);
         }
         return ResponseEntity.notFound().build();
@@ -53,7 +53,7 @@ public class ProductController {
     public ResponseEntity<DTOProduct> updateProduct(@RequestBody @Valid DTOProductUpdated dtoProductUpdated, @PathVariable Long id){
         ProductModel product = productRepository.getReferenceById(id);
         product.updatedProduct(dtoProductUpdated);
-        return ResponseEntity.ok(new DTOProduct(product.getName(), product.getPrice(), product.getQuantity()));
+        return ResponseEntity.ok(new DTOProduct(product.getId(), product.getName(), product.getPrice(), product.getQuantity()));
     }
 
     @Transactional
