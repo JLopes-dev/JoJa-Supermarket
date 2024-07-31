@@ -6,13 +6,15 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
+@Setter
 @Table(name = "products")
 @Entity(name = "Product")
-public class Product {
+public class ProductModel {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -21,7 +23,11 @@ public class Product {
     private Double price;
     private Integer quantity;
 
-    public Product(DTOProduct dtoProduct) {
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserModel user;
+
+    public ProductModel(DTOProduct dtoProduct) {
         this.name = dtoProduct.name();
         this.price = dtoProduct.price();
         this.quantity = dtoProduct.quantity();
